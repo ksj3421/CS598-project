@@ -1,0 +1,4 @@
+[core]
+    remote = dvc-cs598
+['remote "dvc-cs598"']
+    url = s3://dvc-cs598/data/
