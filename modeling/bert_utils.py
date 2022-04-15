@@ -835,8 +835,6 @@ class BertForSequenceClassification(PreTrainedBertModel):
         
         pooled_output2 = self.dropout(pooled_output)
         logits = self.classifier(pooled_output2)
-        print('logits from forward')
-        print(logits.shape)
         if labels is not None:
             loss_fct = BCELoss()
             m = nn.Sigmoid()
