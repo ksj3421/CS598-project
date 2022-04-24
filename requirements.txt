@@ -1,7 +1,8 @@
 funcsigs
-urllib3==1.25.4
+urllib3>=1.25.4
 matplotlib
 scipy
 sklearn
 transformers
-pytorch-pretrained-bert pytorch-nlp
+pytorch-pretrained-bert 
+pytorch-nlp
