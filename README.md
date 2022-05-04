@@ -36,13 +36,14 @@ python modeling/training_clinical_bert.py \
   --data_file_path ./data/3days/ \
   --bert_model ./pretraining/ \
   --max_seq_len 512 \
-  --output_file_path ./final_model_readmission \
+  --output_file_path ./clinicalbert_model_readmission \
   --cuda_num 0 \
   --train_batch_size 32 \
   --learning_rate 0.00002 \
+  --gradient_accumulation_steps 2 \
   --max_grad_norm 1 \
-  --num_train_epochs 1
-  --best_model_path 
+  --warmup_ratio 0.1 \
+  --num_train_epochs 3 
 ```
 when you want to do only inference
 ```
@@ -54,12 +55,13 @@ python modeling/training_clinical_bert.py \
   --bert_model ./pretraining/ \
   --max_seq_len 512 \
   --output_file_path ./final_model_readmission \
-  --cuda_num 0 \
+  --cuda_num 1 \
   --train_batch_size 32 \
   --learning_rate 0.00002 \
+  --gradient_accumulation_steps 2 \
   --max_grad_norm 1 \
-  --num_train_epochs 1
-  --best_model_path ./final_model_readmission/{model_path}
+  --warmup_ratio 0.1 \
+  --num_train_epochs 3 
 ```
 ### Discharge Summary Prediction
 ```
@@ -70,13 +72,20 @@ python modeling/training_clinical_bert.py \
   --data_file_path ./data/discharge/ \
   --bert_model ./pretraining/ \
   --max_seq_len 512 \
-  --output_file_path ../final_model_discharge
-  --cuda_num 1
-  --train_batch_size 32
-  --learning_rate 0.00005
-  --max_grad_norm 1
-  --num_train_epochs 1
+  --output_file_path ../final_model_discharge \
+  --cuda_num 1 \
+  --train_batch_size 32 \
+  --learning_rate 0.00005 \
+  --gradient_accumulation_steps 1 \
+  --max_grad_norm 3 \
+  --num_train_epochs 3
 ```
+### Notebook executed files
+- clinicalbert finetuning: https://github.com/ksj3421/CS598-project/blob/main/modeling/training_clinical_bert_readmission.ipynb
+- originalbert finetuning: https://github.com/ksj3421/CS598-project/blob/main/modeling/training_original_bert_readmission.ipynb
+- bi-lstm: https://github.com/ksj3421/CS598-project/blob/main/modeling/training_clinical_bert_readmission.ipynb
+  - word2vec model: https://github.com/ksj3421/CS598-project/blob/main/modeling/clinical_word2vec_final.model (300 dimension)
+- bag-of-word: https://github.com/ksj3421/CS598-project/blob/main/modeling/bag_of_words.ipynb
 
 ## ClinicalBERT Weights
 Use [this google link](https://drive.google.com/open?id=1t8L9w-r88Q5-sfC993x2Tjt1pu--A900) or [this oneDrive link](https://hu-my.sharepoint.com/:u:/g/personal/kexinhuang_hsph_harvard_edu/ERw4LamJD4xNkkONXI7jsiYBUk6QwDv4t3y_jJcrsjkt9A?e=orU3C3) for users in mainland China to download pretrained ClinicalBERT along with the readmission task fine-tuned model weights.
