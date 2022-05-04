@@ -113,7 +113,7 @@ class DataProcessor(object):
         lines=zip(file.ID,file.TEXT,file.Label)
         return lines
 
-class readmissionProcessor(DataProcessor):
+class clinicalNoteProcessor(DataProcessor):
     def get_train_examples(self, data_dir):
         logger.info("LOOKING AT {}".format(os.path.join(data_dir, "train.csv")))
         return self._create_examples(
@@ -282,7 +282,7 @@ def set_optimizer_params_grad(named_params_optimizer, named_params_model, test_n
             param_opti.grad = None
     return is_nan
 
-def vote_score(df, score, output_path):
+def vote_score(df, score, output_path, qtype, epoch):
     df['pred_score'] = score
     df_sort = df.sort_values(by=['ID'])
     #score 
@@ -301,12 +301,12 @@ def vote_score(df, score, output_path):
     plt.title('ROC curve')
     plt.legend(loc='best')
     plt.show()
-    string = 'auroc_clinicalbert_'+'readmission'+'.png'
+    string = 'auroc_clinicalbert_'+f'{qtype}'+ f'{str(epoch)}' + '.png'
     plt.savefig(os.path.join(output_path, string))
 
     return fpr, tpr, df_out, auc_score
 
-def pr_curve_plot(y, y_score, output_path):
+def pr_curve_plot(y, y_score, output_path, qtype, epoch):
     precision, recall, _ = precision_recall_curve(y, y_score)
     area = auc(recall,precision)
     step_kwargs = ({'step': 'post'}
@@ -324,12 +324,12 @@ def pr_curve_plot(y, y_score, output_path):
     plt.title('Precision-Recall curve: AUC={0:0.2f}'.format(
               area))
     
-    string = 'auprc_clinicalbert_'+'readmission'+'.png'
+    string = 'auprc_clinicalbert_'+f'{qtype}'+ f'{str(epoch)}' + '.png'
 
     plt.savefig(os.path.join(output_path, string))
     return area
 
-def vote_pr_curve(df, score, output_path):
+def vote_pr_curve(df, score, output_path, qtype, real_epoch):
     df['pred_score'] = score
     df_sort = df.sort_values(by=['ID'])
     #score 
@@ -340,7 +340,7 @@ def vote_pr_curve(df, score, output_path):
     pr_thres = pd.DataFrame(data =  list(zip(precision, recall, thres)), columns = ['prec','recall','thres'])
     vote_df = pd.DataFrame(data =  list(zip(temp, y)), columns = ['score','label'])
     
-    pr_curve_plot(y, temp, output_path)
+    pr_curve_plot(y, temp, output_path, qtype, real_epoch)
     
     temp = pr_thres[pr_thres.prec > 0.799999].reset_index()
     
