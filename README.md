@@ -61,7 +61,8 @@ python modeling/training_clinical_bert.py \
   --gradient_accumulation_steps 2 \
   --max_grad_norm 1 \
   --warmup_ratio 0.1 \
-  --num_train_epochs 3 
+  --num_train_epochs 3 \
+  --best_model_path ./final_model_readmission/readmission_clinical_bert_BATCH_SIZE_32_LEARNING_RATE_2e-05_gradient_accu_2_MAX_GRAD_NORM_1_0.pt
 ```
 ### Discharge Summary Prediction
 ```

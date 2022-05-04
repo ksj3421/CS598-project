@@ -300,11 +300,11 @@ def main():
                         default=0,
                         help='cuda number')
     parser.add_argument('--do_train',
-                        type=bool,
+                        type=str,
                         default=True,
                         help='do train')
     parser.add_argument('--do_test',
-                        type=bool,
+                        type=str,
                         default=True,
                         help='do test')
     parser.add_argument('--best_model_path',
@@ -319,7 +319,8 @@ def main():
     seed = 2022
     if args.gradient_accumulation_steps > 1 :
         BATCH_SIZE = int(args.train_batch_size / args.gradient_accumulation_steps)
-    
+    else:
+        BATCH_SIZE = args.train_batch_size
     
     os.makedirs(args.output_file_path, exist_ok=True)
     need_proxy = args.need_proxy
@@ -351,7 +352,7 @@ def main():
     if n_gpu > 0:
         torch.cuda.manual_seed_all(seed)
 
-    if args.do_train == True:
+    if args.do_train == 'True':
         # load train dataset
         train_examples = processor.get_train_examples(f'{args.data_file_path}')
         dev_example = processor.get_dev_examples(f'{args.data_file_path}')
@@ -366,7 +367,7 @@ def main():
         Classifier = BertForSequenceClassification.from_pretrained(f'{args.bert_model}', 1)
         trainer = AbstractTrainer(args=args, model=Classifier, train_dataloader=train_dataloader, dev_dataloader=dev_dataloader, n_gpu=n_gpu)
         trainer.train() # train and eval at the same time
-        if args.do_test == True:
+        if args.do_test == 'True':
             #load best model
             trainer.classifier.load_state_dict(torch.load(trainer.best_model_path))
             Classifier.to(args.device)
@@ -391,8 +392,8 @@ def main():
         else:
             pass
 
-    if args.do_train == False:
-        if args.do_test == True:
+    if args.do_train == 'False':
+        if args.do_test == 'True':
             assert self.model_check_point == '', 'model_check_point is None'
             ## load check point model
             Classifier = BertForSequenceClassification.from_pretrained(os.path.join(f'{args.root_path}/', 'pretraining'), 1)
