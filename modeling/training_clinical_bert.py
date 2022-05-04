@@ -52,6 +52,7 @@ class AbstractTrainer():
         self.warmup_ratio = args.warmup_ratio
         self.tr_loss_epoch = 0
         self.max_seq_len = args.max_seq_len
+        
 
     def train_one_epoch(self, epoch):
         global_step = 0 
@@ -301,6 +302,10 @@ def main():
                         type=str,
                         default='',
                         help='running on cpu')
+    parser.add_argument('--model_check_point',
+                        type=str,
+                        default='',
+                        help='model_path')
     args = parser.parse_args()
     
     ## load arguments
@@ -384,10 +389,10 @@ def main():
 
     if args.do_train == 'False':
         if args.do_test == 'True':
-            assert self.model_check_point == '', 'model_check_point is None'
+            assert args.model_check_point == '', 'model_check_point is None'
             ## load check point model
             Classifier = BertForSequenceClassification.from_pretrained(os.path.join(f'{args.root_path}/', 'pretraining'), 1)
-            classifier.load_state_dict(torch.load(self.model_check_point))
+            classifier.load_state_dict(torch.load(args.model_check_point))
             trainer = AbstractTrainer(args=args, model=Classifier, train_dataloader=None, dev_dataloader=None, n_gpu=n_gpu)
             ## load test data set
             test_example = processor.get_test_examples(f'{args.data_file_path}')
