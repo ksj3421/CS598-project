@@ -214,13 +214,13 @@ class AbstractTrainer():
         result['MAX_SEQ_LENGTH'] = self.max_seq_len
         result['LEARNING_RATE'] = self.learning_rate
         result['eval_type'] = eval_type
+        headers = {'eval_loss': None, 'eval_accuracy': None, 'training loss': None, 'AUROC': None, 'AUPRC': None, 'RP80': None, 'model': None, 'epoch': None, 'batch_size': None, 'MAX_GRAD_NORM': None, 'GRADIENT_ACCUMULATION_STEPS': None, 'MAX_SEQ_LENGTH': None, 'LEARNING_RATE': None, 'eval_type': None}
         try:
             df = pd.read_csv(f'{self.output_file_path}/result.csv')
             with open(f'{self.output_file_path}/result.csv', 'a', newline='') as f:
                 dictwriter_object = DictWriter(f, delimiter=',', fieldnames=headers)
                 dictwriter_object.writerow(result)
         except:
-            headers = {'eval_loss': None, 'eval_accuracy': None, 'training loss': None, 'AUROC': None, 'AUPRC': None, 'RP80': None, 'model': None, 'epoch': None, 'batch_size': None, 'MAX_GRAD_NORM': None, 'GRADIENT_ACCUMULATION_STEPS': None, 'MAX_SEQ_LENGTH': None, 'LEARNING_RATE': None, 'eval_type': None}
             with open(f'{self.output_file_path}/result.csv', 'a', newline='') as f:
                 dictwriter_object = DictWriter(f, delimiter=',', fieldnames=headers)
                 dictwriter_object.writeheader()
