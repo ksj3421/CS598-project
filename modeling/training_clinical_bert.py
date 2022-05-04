@@ -122,15 +122,15 @@ class AbstractTrainer():
             total_learning_rate.extend(learning_rate_list)
             result, loss_history = self.evaluate(real_epoch, self.dev_dataloader, df_raw, eval_type='val')
             total_val_loss_history.extend(loss_history)
-            plt.plot(total_train_loss_history)
-            plt.plot(total_val_loss_history)
-            plt.title('model loss')
-            plt.ylabel('loss')
-            plt.xlabel('epoch')
-            plt.legend(['train', 'val'], loc='upper left')
-            plt.show()
-            string = 'train_test_plot_'+f'{self.args.qtype}'+ f'{str(real_epoch)}' + '.png'
-            plt.savefig(os.path.join(self.output_file_path, string))
+            # plt.plot(total_train_loss_history)
+            # plt.plot(total_val_loss_history)
+            # plt.title('model loss')
+            # plt.ylabel('loss')
+            # plt.xlabel('epoch')
+            # plt.legend(['train', 'val'], loc='upper left')
+            # plt.show()
+            # string = 'train_test_plot_'+f'{self.args.qtype}'+ f'{str(real_epoch)}' + '.png'
+            # plt.savefig(os.path.join(self.output_file_path, string))
             model_name = f'{self.args.qtype}_clinical_bert_BATCH_SIZE_{str(self.train_batch_size)}_LEARNING_RATE_{str(self.learning_rate)}_gradient_accu_{str(self.gradient_accumulation_steps)}_MAX_GRAD_NORM_{str(self.max_grad_norm)}_{str(real_epoch)}.pt'
             model_save_check_score = (result['AUROC'] + result['AUPRC']) / 2
             if self.best_score < model_save_check_score:
@@ -346,7 +346,7 @@ def main():
         train_examples = processor.get_train_examples(f'{args.data_file_path}')
         dev_example = processor.get_dev_examples(f'{args.data_file_path}')
         train_features = convert_examples_to_features(
-            train_examples[:32*100], label_list[:32*100], args.max_seq_len, tokenizer)
+            train_examples, label_list, args.max_seq_len, tokenizer)
         dev_features = convert_examples_to_features(
                 dev_example, label_list, args.max_seq_len, tokenizer)
         train_dataloader = get_data_loader(train_features, args.max_seq_len, BATCH_SIZE, shuffle=True)
