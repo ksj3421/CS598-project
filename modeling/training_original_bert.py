@@ -133,7 +133,7 @@ class AbstractTrainer():
             # plt.show()
             # string = 'train_test_plot_'+f'{self.args.qtype}'+ f'{str(real_epoch)}' + '.png'
             # plt.savefig(os.path.join(args.output_file_path, string))
-            model_name = f'{qtype}_clinical_bert_BATCH_SIZE_{str(self.train_batch_size)}_LEARNING_RATE_{str(self.learning_rate)}_gradient_accu_{str(self.gradient_accumulation_steps)}_MAX_GRAD_NORM_{str(self.max_grad_norm)}_{str(real_epoch)}.pt'
+            model_name = f'{self.qtype}_clinical_bert_BATCH_SIZE_{str(self.train_batch_size)}_LEARNING_RATE_{str(self.learning_rate)}_gradient_accu_{str(self.gradient_accumulation_steps)}_MAX_GRAD_NORM_{str(self.max_grad_norm)}_{str(real_epoch)}.pt'
             model_save_check_score = (result['AUROC'] + result['AUPRC']) / 2
             if self.best_score < model_save_check_score:
                 self.best_score = model_save_check_score
@@ -146,7 +146,7 @@ class AbstractTrainer():
         plt.xlabel('epoch')
         plt.legend(['train', 'val'], loc='upper left')
         plt.show()
-        string = 'train_test_plot_'+f'{self.args.qtype}'+ f'{str(real_epoch)}' + '.png'
+        string = 'train_test_plot_'+f'{self.qtype}'+ f'{str(real_epoch)}' + '.png'
         plt.savefig(os.path.join(self.output_file_path, string))
         
     def evaluate(self, epoch, dataloader, df_test, eval_type='val'):
@@ -245,8 +245,8 @@ def main():
                         help='only for specific machine')
     parser.add_argument('--bert_model',
                         type=str,
-                        default='',
-                        help='bert model path')
+                        default='emilyalsentzer/Bio_ClinicalBERT',
+                        help='any bert based transformers ex) emilyalsentzer/Bio_ClinicalBERT or bert-base-uncased)
     parser.add_argument('--data_file_path',
                         type=str,
                         default=f'{ROOT_DIR}/data/3days/',
@@ -264,7 +264,7 @@ def main():
                         default=512,
                         help='max seq len')
     parser.add_argument('--learning_rate',
-                        type=int,
+                        type=float,
                         default=2e-5,
                         help='learning_rate')
     parser.add_argument('--max_grad_norm',
@@ -333,12 +333,12 @@ def main():
         proxy_file_path = f"{args.root_path}/secrets.json"
         
     if local_test:
-        tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+        tokenizer = AutoTokenizer.from_pretrained(args.bert_model)
     else:
         with open(proxy_file_path, "r") as json_file:
             json_data = json.load(json_file)
             proxies = json_data['proxies']
-            tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased', proxies=proxies) 
+            tokenizer = AutoTokenizer.from_pretrained(args.bert_model, proxies=proxies) 
             
     ## preprocess dataset 
     processor = clinicalNoteProcessor()
@@ -366,9 +366,11 @@ def main():
                 dev_example, label_list, args.max_seq_len, tokenizer)
         train_dataloader = get_data_loader(train_features, args.max_seq_len, BATCH_SIZE, shuffle=True)
         dev_dataloader = get_data_loader(dev_features, args.max_seq_len, args.eval_batch_size, shuffle=False)
-        
-        # initialize trainer
-        Classifier = BertForSequenceClassification.from_pretrained(f'{args.bert_model}', 1)
+        if local_test:
+            Classifier = BertForSequenceClassification.from_pretrained(args.bert_model, num_labels=2)
+        else:
+            # initialize trainer
+            Classifier = BertForSequenceClassification.from_pretrained(args.bert_model, num_labels=2, proxies=proxies)
         trainer = AbstractTrainer(args=args, model=Classifier, train_dataloader=train_dataloader, dev_dataloader=dev_dataloader, n_gpu=n_gpu)
         trainer.train() # train and eval at the same time
         if args.do_test == 'True':

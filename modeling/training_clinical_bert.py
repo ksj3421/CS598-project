@@ -314,6 +314,7 @@ def main():
     seed = 2022
     if args.gradient_accumulation_steps > 1 :
         BATCH_SIZE = int(args.train_batch_size / args.gradient_accumulation_steps)
+        #BATCH_SIZE = args.train_batch_size
     else:
         BATCH_SIZE = args.train_batch_size
     
