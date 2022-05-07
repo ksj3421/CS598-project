@@ -82,8 +82,6 @@ python modeling/training_clinical_bert.py \
   --num_train_epochs 3
 ```
 ### Notebook executed files
-- clinicalbert finetuning: https://github.com/ksj3421/CS598-project/blob/main/modeling/training_clinical_bert_readmission.ipynb
-- originalbert finetuning: https://github.com/ksj3421/CS598-project/blob/main/modeling/training_original_bert_readmission.ipynb
 - bi-lstm: https://github.com/ksj3421/CS598-project/blob/main/modeling/training_clinical_bert_readmission.ipynb
   - word2vec model: https://github.com/ksj3421/CS598-project/blob/main/modeling/clinical_word2vec_final.model (300 dimension)
 - bag-of-word: https://github.com/ksj3421/CS598-project/blob/main/modeling/bag_of_words.ipynb
