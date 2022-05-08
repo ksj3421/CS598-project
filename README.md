@@ -54,7 +54,7 @@ python modeling/training_clinical_bert.py \
   --data_file_path ./data/3days/ \
   --bert_model ./pretraining/ \
   --max_seq_len 512 \
-  --output_file_path ./final_model_readmission \
+  --output_file_path ./model_inference_result \
   --cuda_num 1 \
   --train_batch_size 32 \
   --learning_rate 0.00002 \
@@ -62,8 +62,25 @@ python modeling/training_clinical_bert.py \
   --max_grad_norm 1 \
   --warmup_ratio 0.1 \
   --num_train_epochs 3 \
-  --best_model_path ./final_model_readmission/readmission_clinical_bert_BATCH_SIZE_32_LEARNING_RATE_2e-05_gradient_accu_2_MAX_GRAD_NORM_1_0.pt
+  --best_model_path ./experiment/readmission_model_experiment/readmission_clinical_bert_BATCH_SIZE_16_LEARNING_RATE_2e-05_gradient_accu_2_MAX_GRAD_NORM_1_0.pt
 ```
+```
+python modeling/training_original_bert.py \
+  --qtype discharge \
+  --do_train True \
+  --do_test True \
+  --data_file_path ./data/discharge/ \
+  --bert_model bert-base-uncased \
+  --max_seq_len 512 \
+  --output_file_path ./final_model_discharge_bert-base \
+  --cuda_num 2 \
+  --train_batch_size 32 \
+  --learning_rate 0.00002 \
+  --gradient_accumulation_steps 1 \
+  --max_grad_norm 3 \
+  --num_train_epochs 3
+ ```
+
 ### Discharge Summary Prediction
 ```
 python modeling/training_clinical_bert.py \

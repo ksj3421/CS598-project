@@ -300,12 +300,9 @@ def main():
                         help='do test')
     parser.add_argument('--best_model_path',
                         type=str,
-                        default='',
-                        help='running on cpu')
-    parser.add_argument('--model_check_point',
-                        type=str,
-                        default='',
-                        help='model_path')
+                        default='./experiment/readmission_model_experiment/readmission_clinical_bert_BATCH_SIZE_16_LEARNING_RATE_2e-05_gradient_accu_2_MAX_GRAD_NORM_1_0.pt',
+                        help='best_model_path')
+    
     args = parser.parse_args()
     
     ## load arguments
@@ -390,10 +387,11 @@ def main():
 
     if args.do_train == 'False':
         if args.do_test == 'True':
-            assert args.model_check_point == '', 'model_check_point is None'
+            print(args.best_model_path)
             ## load check point model
             Classifier = BertForSequenceClassification.from_pretrained(os.path.join(f'{args.root_path}/', 'pretraining'), 1)
-            classifier.load_state_dict(torch.load(args.model_check_point))
+            Classifier.load_state_dict(torch.load(args.best_model_path))
+            Classifier.to(args.device)
             trainer = AbstractTrainer(args=args, model=Classifier, train_dataloader=None, dev_dataloader=None, n_gpu=n_gpu)
             ## load test data set
             test_example = processor.get_test_examples(f'{args.data_file_path}')
