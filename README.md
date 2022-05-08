@@ -114,6 +114,13 @@ The following scripts presume a model folder that has following structure:
     -vocab.txt
 ```
 
+## Table of Results
+
+Results are shown in 'experiment' folder 
+
+1. Experiment results on discharge summary - experiment/discharge_model_experiment/result.csv
+2. Experiment results on early notes admission  - experiment/readmission_model_experiment/result.csv
+
 ## Citation
 
 Please cite [arxiv](https://arxiv.org/abs/1904.05342):
