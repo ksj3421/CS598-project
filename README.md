@@ -1,6 +1,12 @@
 ## CS598-project  
 This repo  mainly tries to re-implement Repository for [Publicly Available Clinical BERT Embeddings]( for Publicly Available Clinical BERT Embeddings (NAACL Clinical NLP Workshop 2019)) (NAACL Clinical NLP Workshop 2019)
 
+## Original Paper Repo
+
+```
+https://github.com/kexinhuang12345/clinicalBERT
+```
+
 ## Installation and Requirements
 
 ```
